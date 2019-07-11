@@ -1,4 +1,4 @@
-# project_little.py
+# project_name/project_name.py
 import os
 import sys
 from django.conf import settings
