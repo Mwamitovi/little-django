@@ -26,7 +26,7 @@ settings.configure(
 
 from django import forms
 from django.conf.urls import url
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.wsgi import get_wsgi_application
 
 
@@ -45,7 +45,14 @@ def index(request):
 
 # view
 def placeholder(request, width, height):
-    return HttpResponse('OK')
+    form = ImageForm({'width': width, 'height': height})
+    if form.is_valid():
+        width = form.cleaned_data['width']
+        height = form.cleaned_data['height']
+        # generate image of requested size
+        return HttpResponse('OK')
+    else:
+        return HttpResponseBadRequest('Invalid Image Request')
 
 
 # url
