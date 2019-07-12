@@ -1,6 +1,7 @@
 # project_name/project_name.py
 import os
 import sys
+import hashlib
 from io import BytesIO
 from PIL import Image, ImageDraw
 from django.conf import settings
@@ -29,6 +30,7 @@ settings.configure(
 from django import forms
 from django.conf.urls import url
 from django.core.cache import cache
+from django.views.decorators.http import etag
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.wsgi import get_wsgi_application
 
@@ -69,7 +71,7 @@ class ImageForm(forms.Form):
             _content = BytesIO()
             _image.save(_content, image_format)
             _content.seek(0)
-            
+
             # cache image for an hour
             cache.set(_key, _content, 60*60)
 
@@ -81,9 +83,18 @@ def index(request):
     return HttpResponse('Hello World')
 
 
-# view
+def generate_etag(request, width, height):
+    """ create string representing Etag for image resource """
+
+    _content = 'Placeholder: {0} x {1}'.format(width, height)
+    return hashlib.sha1(_content.encode('utf-8')).hexdigest()
+
+
+# conditional view
+@etag(generate_etag)
 def placeholder(request, width, height):
     form = ImageForm({'width': width, 'height': height})
+    
     if form.is_valid():
         # generate image of requested size
         _image = form.generate()
