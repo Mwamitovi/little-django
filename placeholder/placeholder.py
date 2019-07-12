@@ -28,6 +28,7 @@ settings.configure(
 
 from django import forms
 from django.conf.urls import url
+from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.wsgi import get_wsgi_application
 
@@ -45,23 +46,34 @@ class ImageForm(forms.Form):
         """
         width = self.cleaned_data['width']
         height = self.cleaned_data['height']
-        _image = Image.new('RGB', (width, height))
+        _key = '{}.{}.{}'.format(width, height, image_format)
 
-        # using ImageDraw to generate text
-        draw = ImageDraw.Draw(_image)
-        text = '{} X {}'.format(width, height)
-        text_width, text_height = draw.textsize(text)
+        # check if image is in cache
+        _content = cache.get(_key)
 
-        # add a text overlay if it fits
-        if text_width < width and text_height < height:
-            text_top = (height - text_height) // 2
-            text_left = (width - text_width) // 2
-            draw.text((text_left, text_top), text, fill=(255, 255, 255))
+        # if data not in cache
+        if _content is None:
+            _image = Image.new('RGB', (width, height))
 
-        content = BytesIO()
-        _image.save(content, image_format)
-        content.seek(0)
-        return content
+            # using ImageDraw to generate text
+            draw = ImageDraw.Draw(_image)
+            text = '{} X {}'.format(width, height)
+            text_width, text_height = draw.textsize(text)
+
+            # add a text overlay if it fits
+            if text_width < width and text_height < height:
+                text_top = (height - text_height) // 2
+                text_left = (width - text_width) // 2
+                draw.text((text_left, text_top), text, fill=(255, 255, 255))
+
+            _content = BytesIO()
+            _image.save(_content, image_format)
+            _content.seek(0)
+            
+            # cache image for an hour
+            cache.set(_key, _content, 60*60)
+
+        return _content
 
 
 # view
