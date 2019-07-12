@@ -7,6 +7,8 @@ from PIL import Image, ImageDraw
 from django.conf import settings
 
 
+BASE_DIR = os.path.dirname(__file__)
+
 DEBUG = os.environ.get('DEBUG', 'on') == 'on'
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'v^2tywnt=emq3qtj!93+-ngib59a9p(o0_f1m*+43wv%1-@)*+')
@@ -24,6 +26,16 @@ settings.configure(
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ),
+    INSTALLED_APPS=(
+        'django.contrib.staticfiles',
+    ),
+    TEMPLATE_DIRS=(
+        os.path.join(BASE_DIR, 'templates'),
+    ),
+    STATICFILES_DIRS=(
+        os.path.join(BASE_DIR, 'static'),
+    ),
+    STATIC_URL = '/static/',
 )
 
 
@@ -94,7 +106,7 @@ def generate_etag(request, width, height):
 @etag(generate_etag)
 def placeholder(request, width, height):
     form = ImageForm({'width': width, 'height': height})
-    
+
     if form.is_valid():
         # generate image of requested size
         _image = form.generate()
