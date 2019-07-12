@@ -41,7 +41,10 @@ def placeholder(request, width, height):
 
 # url
 urlpatterns = [
-    url(r'^$', index)
+    url(r'^$', index,
+        name='homepage'),
+    url(r'^image/(?P<width>[0-9]+)x(?P<height>[0-9]+)/$', placeholder,
+        name='placeholder'),
 ]
 
 
