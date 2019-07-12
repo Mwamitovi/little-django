@@ -2,7 +2,7 @@
 import os
 import sys
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageDraw
 from django.conf import settings
 
 
@@ -46,6 +46,18 @@ class ImageForm(forms.Form):
         width = self.cleaned_data['width']
         height = self.cleaned_data['height']
         _image = Image.new('RGB', (width, height))
+
+        # using ImageDraw to generate text
+        draw = ImageDraw.Draw(_image)
+        text = '{} X {}'.format(width, height)
+        text_width, text_height = draw.textsize(text)
+
+        # add a text overlay if it fits
+        if text_width < width and text_height < height:
+            text_top = (height - text_height) // 2
+            text_left = (width - text_width) // 2
+            draw.text((text_left, text_top), text, fill=(255, 255, 255))
+
         content = BytesIO()
         _image.save(content, image_format)
         content.seek(0)
