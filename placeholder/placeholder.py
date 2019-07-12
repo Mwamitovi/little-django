@@ -34,6 +34,11 @@ def index(request):
     return HttpResponse('Hello World')
 
 
+# view
+def placeholder(request, width, height):
+    return HttpResponse('OK')
+
+
 # url
 urlpatterns = [
     url(r'^$', index)
