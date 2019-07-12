@@ -45,9 +45,9 @@ class ImageForm(forms.Form):
         """
         width = self.cleaned_data['width']
         height = self.cleaned_data['height']
-        image = Image.new('RGB', (width, height))
+        _image = Image.new('RGB', (width, height))
         content = BytesIO()
-        image.save(content, image_format)
+        _image.save(content, image_format)
         content.seek(0)
         return content
 
@@ -61,10 +61,9 @@ def index(request):
 def placeholder(request, width, height):
     form = ImageForm({'width': width, 'height': height})
     if form.is_valid():
-        width = form.cleaned_data['width']
-        height = form.cleaned_data['height']
         # generate image of requested size
-        return HttpResponse('OK')
+        _image = form.generate()
+        return HttpResponse(_image, content_type='image/png')
     else:
         return HttpResponseBadRequest('Invalid Image Request')
 
