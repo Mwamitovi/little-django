@@ -41,6 +41,8 @@ settings.configure(
 
 from django import forms
 from django.conf.urls import url
+from django.urls import reverse
+from django.shortcuts import render
 from django.core.cache import cache
 from django.views.decorators.http import etag
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -92,7 +94,9 @@ class ImageForm(forms.Form):
 
 # view
 def index(request):
-    return HttpResponse('Hello World')
+    example = reverse('placeholder', kwargs={'width': 50, 'height': 50})
+    _context = {'example': request.build_absolute_uri(example)}
+    return render(request, 'home.html', _context)
 
 
 def generate_etag(request, width, height):
