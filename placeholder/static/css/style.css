@@ -1,0 +1,23 @@
+/* styles.css (v0.1) @2019 */
+
+.container {
+    padding: 2em 0em 1.5em;
+    }
+
+    .container:last-of-type {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+.ui.header {
+    color: rgb(33, 133, 208);
+}
+
+.ui.dividing.header,
+.first {
+  margin-top: 2.5em;
+}
+
+.ui.dividing.header:first-child {
+    margin-top: 0em;
+}
