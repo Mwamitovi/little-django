@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}    
+<head>
+    <meta charset="utf-8">
+    <title>Placeholder Images</title>
+    <script type="text/javascript" src="{% static 'scripts/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/semantic.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/semantic.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% block content %}
+        <!-- place content here in child templates -->
+    {% endblock content %}
+</body>
+</html>
