@@ -73,7 +73,7 @@ class ImageForm(forms.Form):
 
         # if data not in cache
         if _content is None:
-            _image = Image.new('RGB', (width, height))
+            _image = Image.new('RGBA', (width, height), (255, 255, 255, 0))
 
             # using ImageDraw to generate text
             draw = ImageDraw.Draw(_image)
@@ -84,7 +84,7 @@ class ImageForm(forms.Form):
             if text_width < width and text_height < height:
                 text_top = (height - text_height) // 2
                 text_left = (width - text_width) // 2
-                draw.text((text_left, text_top), text, fill=(255, 255, 255))
+                draw.text((text_left, text_top), text, fill=(0, 0, 0))
 
             _content = BytesIO()
             _image.save(_content, image_format)
